@@ -54,6 +54,7 @@ Usage Example
 =============
 
 .. code-block:: python
+
 	import board
 	import adafruit_touchscreen
 
