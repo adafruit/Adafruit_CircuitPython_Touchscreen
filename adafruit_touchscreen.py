@@ -68,8 +68,8 @@ class Touchscreen:
         """Create the Touchscreen object. At a minimum you need the 4 pins
         that will connect to the 4 contacts on a screen. X and Y are just our
         names, you can rotate and flip the data if you like. All pins must be
-        capable of becoming DigitalInOut pins. 'y2_pin' and 'x2_pin' must also
-        be capable of becoming AnalogIn pins.
+        capable of becoming DigitalInOut pins. 'y2_pin', 'x1_pin' and 'x2_pin'
+	must also be capable of becoming AnalogIn pins.
         If you know the resistance across the x1 and x2 pins when not touched,
         pass that in as 'x_resistance'.
         By default we oversample 4 times, change by adjusting 'samples' arg.
