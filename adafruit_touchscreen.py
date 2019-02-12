@@ -1,5 +1,50 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2019 ladyada for Adafruit
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+"""
+`adafruit_touchscreen`
+================================================================================
+
+CircuitPython library for 4-wire resistive touchscreens
+
+
+* Author(s): ladyada
+
+Implementation Notes
+--------------------
+
+**Hardware:**
+
+
+**Software and Dependencies:**
+
+* Adafruit CircuitPython firmware for the supported boards:
+  https://github.com/adafruit/circuitpython/releases
+"""
+
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Touchscreen.git"
+
+from digitalio import DigitalInOut
 from analogio import AnalogIn
-from digitalio import DigitalInOut, Direction, Pull
 
 def map_range(x, in_min, in_max, out_min, out_max):
     """
@@ -14,12 +59,31 @@ def map_range(x, in_min, in_max, out_min, out_max):
     return min(max(mapped, out_max), out_min)
 
 class Touchscreen:
+    """A driver for common and inexpensive resistive touchscreens. Analog input
+    capable pins are required to read the intrinsic potentiometers"""
 
     def __init__(self, x1_pin, x2_pin, y1_pin, y2_pin, *,
                  x_resistance=None, samples=4, z_threshhold=10000,
                  calibration=None, size=None):
-        """Since we use the pins as both analog and digital, they must be pins
-        not DigitalInOuts!"""
+        """Create the Touchscreen object. At a minimum you need the 4 pins
+        that will connect to the 4 contacts on a screen. X and Y are just our
+        names, you can rotate and flip the data if you like. All pins must be
+        capable of becoming DigitalInOut pins. 'y2_pin', 'x1_pin' and 'x2_pin'
+	must also be capable of becoming AnalogIn pins.
+        If you know the resistance across the x1 and x2 pins when not touched,
+        pass that in as 'x_resistance'.
+        By default we oversample 4 times, change by adjusting 'samples' arg.
+        We can also detect the 'z' threshold, how much its prssed. We don't
+        register a touch unless its higher than 'z_threshold'
+        'calibration' is a tuple of two tuples, the default is
+        ((0, 65535), (0, 65535)). The numbers are the min/max readings for the
+        X and Y coordinate planes, respectively. To figure these out, pass in
+        no calibration value and read the raw values out while touching the
+        panel.
+        'size' is a tuple that gives the X and Y pixel size of the underlying
+        screen. If passed in, we will automatically scale/rotate so touches
+        correspond to the graphical coordinate system.
+        """
         self._xm_pin = x1_pin
         self._xp_pin = x2_pin
         self._ym_pin = y1_pin
@@ -34,44 +98,46 @@ class Touchscreen:
         self._zthresh = z_threshhold
 
     @property
-    def touch_point(self):
-        with DigitalInOut(self._yp_pin) as yp:
-            with DigitalInOut(self._ym_pin) as ym:
-                with AnalogIn(self._xp_pin) as xp:
-                    yp.switch_to_output(True)
-                    ym.switch_to_output(False)
+    def touch_point(self): # pylint: disable=too-many-locals
+        """A tuple that represents the x, y and z (touch pressure) coordinates
+        of a touch. Or, None if no touch is detected"""
+        with DigitalInOut(self._yp_pin) as y_p:
+            with DigitalInOut(self._ym_pin) as y_m:
+                with AnalogIn(self._xp_pin) as x_p:
+                    y_p.switch_to_output(True)
+                    y_m.switch_to_output(False)
                     for i in range(len(self._xsamples)):
-                        self._xsamples[i] = xp.value
+                        self._xsamples[i] = x_p.value
         x = sum(self._xsamples) / len(self._xsamples)
         x_size = 65535
         if self._size:
             x_size = self._size[0]
         x = int(map_range(x, self._calib[0][0], self._calib[0][1], 0, x_size))
 
-        with DigitalInOut(self._xp_pin) as xp:
-            with DigitalInOut(self._xm_pin) as xm:
-                with AnalogIn(self._yp_pin) as yp:
-                    xp.switch_to_output(True)
-                    xm.switch_to_output(False)
+        with DigitalInOut(self._xp_pin) as x_p:
+            with DigitalInOut(self._xm_pin) as x_m:
+                with AnalogIn(self._yp_pin) as y_p:
+                    x_p.switch_to_output(True)
+                    x_m.switch_to_output(False)
                     for i in range(len(self._ysamples)):
-                        self._ysamples[i] = yp.value
+                        self._ysamples[i] = y_p.value
         y = sum(self._ysamples) / len(self._ysamples)
         y_size = 65535
         if self._size:
             y_size = self._size[1]
         y = int(map_range(y, self._calib[1][0], self._calib[1][1], 0, y_size))
 
-        z1 = z2 = z = None
-        with DigitalInOut(self._xp_pin) as xp:
-            xp.switch_to_output(False)
-            with DigitalInOut(self._ym_pin) as ym:
-                ym.switch_to_output(True)
-                with AnalogIn(self._xm_pin) as xm:
-                    z1 = xm.value
-                with AnalogIn(self._yp_pin) as yp:
-                    z2 = yp.value
-        #print(z1, z2)
-        z = 65535 - (z2-z1)
+        z_1 = z_2 = z = None
+        with DigitalInOut(self._xp_pin) as x_p:
+            x_p.switch_to_output(False)
+            with DigitalInOut(self._ym_pin) as y_m:
+                y_m.switch_to_output(True)
+                with AnalogIn(self._xm_pin) as x_m:
+                    z_1 = x_m.value
+                with AnalogIn(self._yp_pin) as y_p:
+                    z_2 = y_p.value
+        #print(z_1, z_2)
+        z = 65535 - (z_2-z_1)
         if z > self._zthresh:
             return (x, y, z)
         return None
