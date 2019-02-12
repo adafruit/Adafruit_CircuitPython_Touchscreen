@@ -58,8 +58,9 @@ Usage Example
 	import board
 	import adafruit_touchscreen
 
-	# These pins are used as both analog and digital! XR and YU must be analog
-	# and digital capable. XL and YD just need to be digital
+	# These pins are used as both analog and digital! 
+	# XR, XL and YU must be analog and digital capable. 
+	# YD just needs to be digital.
 	ts = adafruit_touchscreen.Touchscreen(board.TOUCH_XL, board.TOUCH_XR,
 					      board.TOUCH_YD, board.TOUCH_YU)
 
