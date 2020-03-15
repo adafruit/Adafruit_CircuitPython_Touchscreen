@@ -46,6 +46,7 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Touchscreen.git"
 from digitalio import DigitalInOut
 from analogio import AnalogIn
 
+
 def map_range(x, in_min, in_max, out_min, out_max):
     """
     Maps a number from one range to another.
@@ -53,18 +54,29 @@ def map_range(x, in_min, in_max, out_min, out_max):
     :return: Returns value mapped to new range
     :rtype: float
     """
-    mapped = (x-in_min) * (out_max - out_min) / (in_max-in_min) + out_min
+    mapped = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
     if out_min <= out_max:
         return max(min(mapped, out_max), out_min)
     return min(max(mapped, out_max), out_min)
+
 
 class Touchscreen:
     """A driver for common and inexpensive resistive touchscreens. Analog input
     capable pins are required to read the intrinsic potentiometers"""
 
-    def __init__(self, x1_pin, x2_pin, y1_pin, y2_pin, *,
-                 x_resistance=None, samples=4, z_threshhold=10000,
-                 calibration=None, size=None):
+    def __init__(
+        self,
+        x1_pin,
+        x2_pin,
+        y1_pin,
+        y2_pin,
+        *,
+        x_resistance=None,
+        samples=4,
+        z_threshhold=10000,
+        calibration=None,
+        size=None
+    ):
         """Create the Touchscreen object. At a minimum you need the 4 pins
         that will connect to the 4 contacts on a screen. X and Y are just our
         names, you can rotate and flip the data if you like. All pins must be
@@ -98,7 +110,7 @@ class Touchscreen:
         self._zthresh = z_threshhold
 
     @property
-    def touch_point(self): # pylint: disable=too-many-locals
+    def touch_point(self):  # pylint: disable=too-many-locals
         """A tuple that represents the x, y and z (touch pressure) coordinates
         of a touch. Or, None if no touch is detected"""
         with DigitalInOut(self._yp_pin) as y_p:
@@ -136,8 +148,8 @@ class Touchscreen:
                     z_1 = x_m.value
                 with AnalogIn(self._yp_pin) as y_p:
                     z_2 = y_p.value
-        #print(z_1, z_2)
-        z = 65535 - (z_2-z_1)
+        # print(z_1, z_2)
+        z = 65535 - (z_2 - z_1)
         if z > self._zthresh:
             return (x, y, z)
         return None

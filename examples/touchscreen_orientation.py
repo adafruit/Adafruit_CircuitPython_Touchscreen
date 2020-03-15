@@ -8,31 +8,47 @@ rotation = 270
 
 if rotation == 0:
     # -------Rotate 0:
-    ts = adafruit_touchscreen.Touchscreen(board.TOUCH_XL, board.TOUCH_XR,
-                                          board.TOUCH_YD, board.TOUCH_YU,
-                                          calibration=((5200, 59000), (5800, 57000)),
-                                          size=(320, 240))
+    ts = adafruit_touchscreen.Touchscreen(
+        board.TOUCH_XL,
+        board.TOUCH_XR,
+        board.TOUCH_YD,
+        board.TOUCH_YU,
+        calibration=((5200, 59000), (5800, 57000)),
+        size=(320, 240),
+    )
 
 if rotation == 90:
     # -------Rotate 90:
-    ts = adafruit_touchscreen.Touchscreen(board.TOUCH_YU, board.TOUCH_YD,
-                                          board.TOUCH_XL, board.TOUCH_XR,
-                                          calibration=((5200, 59000), (5800, 57000)),
-                                          size=(240, 320))
+    ts = adafruit_touchscreen.Touchscreen(
+        board.TOUCH_YU,
+        board.TOUCH_YD,
+        board.TOUCH_XL,
+        board.TOUCH_XR,
+        calibration=((5200, 59000), (5800, 57000)),
+        size=(240, 320),
+    )
 
 if rotation == 180:
     # ------Rotate 180:
-    ts = adafruit_touchscreen.Touchscreen(board.TOUCH_XR, board.TOUCH_XL,
-                                          board.TOUCH_YU, board.TOUCH_YD,
-                                          calibration=((5200, 59000), (5800, 57000)),
-                                          size=(320, 240))
+    ts = adafruit_touchscreen.Touchscreen(
+        board.TOUCH_XR,
+        board.TOUCH_XL,
+        board.TOUCH_YU,
+        board.TOUCH_YD,
+        calibration=((5200, 59000), (5800, 57000)),
+        size=(320, 240),
+    )
 
 if rotation == 270:
     # ------Rotate 270:
-    ts = adafruit_touchscreen.Touchscreen(board.TOUCH_YD, board.TOUCH_YU,
-                                          board.TOUCH_XR, board.TOUCH_XL,
-                                          calibration=((5200, 59000), (5800, 57000)),
-                                          size=(240, 320))
+    ts = adafruit_touchscreen.Touchscreen(
+        board.TOUCH_YD,
+        board.TOUCH_YU,
+        board.TOUCH_XR,
+        board.TOUCH_XL,
+        calibration=((5200, 59000), (5800, 57000)),
+        size=(240, 320),
+    )
 
 while True:
     p = ts.touch_point
