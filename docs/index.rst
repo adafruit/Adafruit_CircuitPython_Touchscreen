@@ -27,6 +27,12 @@ Table of Contents
 .. toctree::
     :caption: Related Products
 
+    Adafruit PyPortal - CircuitPython Powered Internet Display <https://www.adafruit.com/product/4116>
+
+    Adafruit PyPortal Titano <https://www.adafruit.com/product/4444>
+
+    Adafruit PyPortal Pynt - CircuitPython Powered Internet Display - 2.4" TFT <https://www.adafruit.com/product/4465>
+
 
 .. toctree::
     :caption: Other Links
