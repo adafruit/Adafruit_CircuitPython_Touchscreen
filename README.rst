@@ -53,21 +53,21 @@ To install in a virtual environment in your current project:
 Usage Example
 =============
 
-.. code-block:: python
+.. code-block:: python3
 
-	import board
-	import adafruit_touchscreen
+    import board
+    import adafruit_touchscreen
 
-	# These pins are used as both analog and digital!
-	# XR, XL and YU must be analog and digital capable.
-	# YD just needs to be digital.
-	ts = adafruit_touchscreen.Touchscreen(board.TOUCH_XL, board.TOUCH_XR,
-					      board.TOUCH_YD, board.TOUCH_YU)
+    # These pins are used as both analog and digital!
+    # XR, XL and YU must be analog and digital capable.
+    # YD just needs to be digital.
+    ts = adafruit_touchscreen.Touchscreen(board.TOUCH_XL, board.TOUCH_XR,
+                          board.TOUCH_YD, board.TOUCH_YU)
 
-	while True:
-	    p = ts.touch_point
-	    if p:
-		print(p)
+    while True:
+        p = ts.touch_point
+        if p:
+        print(p)
 
 
 Contributing

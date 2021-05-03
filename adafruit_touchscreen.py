@@ -14,13 +14,11 @@ CircuitPython library for 4-wire resistive touchscreens
 Implementation Notes
 --------------------
 
-**Hardware:**
-
-
 **Software and Dependencies:**
 
 * Adafruit CircuitPython firmware for the supported boards:
-  https://github.com/adafruit/circuitpython/releases
+  https://circuitpython.org/downloads
+
 """
 
 __version__ = "0.0.0-auto.0"
@@ -31,11 +29,18 @@ from analogio import AnalogIn
 
 
 def map_range(x, in_min, in_max, out_min, out_max):
+
     """
     Maps a number from one range to another.
-    Note: This implementation handles values < in_min differently than arduino's map function does.
+
+    .. note:: This implementation handles values < in_min differently
+              than arduino's map function does.
+
+
     :return: Returns value mapped to new range
     :rtype: float
+
+
     """
     mapped = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
     if out_min <= out_max:
@@ -45,7 +50,42 @@ def map_range(x, in_min, in_max, out_min, out_max):
 
 class Touchscreen:
     """A driver for common and inexpensive resistive touchscreens. Analog input
-    capable pins are required to read the intrinsic potentiometers"""
+    capable pins are required to read the intrinsic potentiometers
+
+    Create the Touchscreen object. At a minimum you need the 4 pins
+    that will connect to the 4 contacts on a screen. X and Y are just our
+    names, you can rotate and flip the data if you like. All pins must be
+    capable of becoming DigitalInOut pins. :attr:`y2_pin`, :attr:`x1_pin`
+    and :attr:`x2_pin` must also be capable of becoming AnalogIn pins.
+    If you know the resistance across the x1 and x2 pins when not touched,
+    pass that in as 'x_resistance'.
+    :attr:`calibration` is a tuple of two tuples, the default is
+    ((0, 65535), (0, 65535)). The numbers are the min/max readings for the
+    X and Y coordinate planes, respectively. To figure these out, pass in
+    no calibration value and read the raw values out while touching the
+    panel.
+    :attr:`size` is a tuple that gives the X and Y pixel size of the underlying
+    screen. If passed in, we will automatically scale/rotate so touches
+    correspond to the graphical coordinate system.
+
+    :param ~microcontroller.Pin x1_pin: Data pin for Left side of the screen.
+     Must also be capable of becoming AnalogIn pins.
+    :param ~microcontroller.Pin x2_pin: Data pin for Right side of the screen.
+     Must also be capable of becoming AnalogIn pins.
+    :param ~microcontroller.Pin y1_pin: Data pin for Bottom side of the screen.
+    :param ~microcontroller.Pin y2_pin: Data pin for Top side of the screen.
+     Must also be capable of becoming AnalogIn pins.
+    :param int x_resistance: If you know the resistance across the x1 and x2
+     pins when not touched, pass that in as :attr:`x_resistance`
+    :param int  samples: change by adjusting :attr:`samples` arg. Defaults to :const:`4`
+    :param int z_threshold: We can also detect the 'z' threshold, how much
+     its pressed. We don't register a touch unless its higher than :attr:`z_threshold`
+    :param (int,int),(int,int) calibration: A tuple of two tuples The numbers are the min/max
+     readings for the X and Y coordinate planes, respectively.
+     Defaults to :const:`((0, 65535), (0, 65535))`
+    :param int,int size: The dimensions of the screen as (x, y).
+
+    """
 
     def __init__(
         self,
@@ -56,29 +96,11 @@ class Touchscreen:
         *,
         x_resistance=None,
         samples=4,
-        z_threshhold=10000,
+        z_threshold=10000,
         calibration=None,
         size=None
     ):
-        """Create the Touchscreen object. At a minimum you need the 4 pins
-        that will connect to the 4 contacts on a screen. X and Y are just our
-        names, you can rotate and flip the data if you like. All pins must be
-        capable of becoming DigitalInOut pins. 'y2_pin', 'x1_pin' and 'x2_pin'
-        must also be capable of becoming AnalogIn pins.
-        If you know the resistance across the x1 and x2 pins when not touched,
-        pass that in as 'x_resistance'.
-        By default we oversample 4 times, change by adjusting 'samples' arg.
-        We can also detect the 'z' threshold, how much its prssed. We don't
-        register a touch unless its higher than 'z_threshold'
-        'calibration' is a tuple of two tuples, the default is
-        ((0, 65535), (0, 65535)). The numbers are the min/max readings for the
-        X and Y coordinate planes, respectively. To figure these out, pass in
-        no calibration value and read the raw values out while touching the
-        panel.
-        'size' is a tuple that gives the X and Y pixel size of the underlying
-        screen. If passed in, we will automatically scale/rotate so touches
-        correspond to the graphical coordinate system.
-        """
+
         self._xm_pin = x1_pin
         self._xp_pin = x2_pin
         self._ym_pin = y1_pin
@@ -90,7 +112,7 @@ class Touchscreen:
             calibration = ((0, 65535), (0, 65535))
         self._calib = calibration
         self._size = size
-        self._zthresh = z_threshhold
+        self._zthresh = z_threshold
 
     @property
     def touch_point(self):  # pylint: disable=too-many-locals
