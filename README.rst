@@ -70,6 +70,11 @@ Usage Example
         print(p)
 
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/touchscreen/en/latest/>`_.
+
 Contributing
 ============
 
