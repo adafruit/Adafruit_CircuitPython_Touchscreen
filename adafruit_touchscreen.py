@@ -123,7 +123,9 @@ class Touchscreen:
                 with AnalogIn(self._xp_pin) as x_p:
                     y_p.switch_to_output(True)
                     y_m.switch_to_output(False)
-                    for i in range(len(self._xsamples)):
+                    for i in range(  # pylint: disable=consider-using-enumerate
+                        len(self._xsamples)
+                    ):
                         self._xsamples[i] = x_p.value
         x = sum(self._xsamples) / len(self._xsamples)
         x_size = 65535
@@ -136,7 +138,9 @@ class Touchscreen:
                 with AnalogIn(self._yp_pin) as y_p:
                     x_p.switch_to_output(True)
                     x_m.switch_to_output(False)
-                    for i in range(len(self._ysamples)):
+                    for i in range(  # pylint: disable=consider-using-enumerate
+                        len(self._ysamples)
+                    ):
                         self._ysamples[i] = y_p.value
         y = sum(self._ysamples) / len(self._ysamples)
         y_size = 65535
