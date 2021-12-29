@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2019 ladyada for Adafruit Industries
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MITx
 
 """
 `adafruit_touchscreen`
