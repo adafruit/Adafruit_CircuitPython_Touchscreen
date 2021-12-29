@@ -67,7 +67,7 @@ class Touchscreen:
     :attr:`size` is a tuple that gives the X and Y pixel size of the underlying
     screen. If passed in, we will automatically scale/rotate so touches
     correspond to the graphical coordinate system.
-    
+
     :param ~microcontroller.Pin x1_pin: Data pin for Left side of the screen.
      Must also be capable of becoming AnalogIn pins.
     :param ~microcontroller.Pin x2_pin: Data pin for Right side of the screen.
