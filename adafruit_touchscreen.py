@@ -62,8 +62,8 @@ class Touchscreen:
     :attr:`calibration` is a tuple of two tuples, the default is
     ((0, 65535), (0, 65535)). The numbers are the min/max readings for the
     X and Y coordinate planes, respectively. To figure these out, pass in
-    no calibration value and read the raw values out while touching the
-    panel.
+    no calibration value or size value and read the raw minimum and maximum
+    values out while touching the panel.
     :attr:`size` is a tuple that gives the X and Y pixel size of the underlying
     screen. If passed in, we will automatically scale/rotate so touches
     correspond to the graphical coordinate system.
@@ -108,6 +108,7 @@ class Touchscreen:
         self._rx_plate = x_resistance
         self._xsamples = [0] * samples
         self._ysamples = [0] * samples
+        self._zsamples = [0] * samples
         if not calibration:
             calibration = ((0, 65535), (0, 65535))
         self._calib = calibration
@@ -118,36 +119,6 @@ class Touchscreen:
     def touch_point(self):  # pylint: disable=too-many-locals
         """A tuple that represents the x, y and z (touch pressure) coordinates
         of a touch. Or, None if no touch is detected"""
-        with DigitalInOut(self._yp_pin) as y_p:
-            with DigitalInOut(self._ym_pin) as y_m:
-                with AnalogIn(self._xp_pin) as x_p:
-                    y_p.switch_to_output(True)
-                    y_m.switch_to_output(False)
-                    for i in range(  # pylint: disable=consider-using-enumerate
-                        len(self._xsamples)
-                    ):
-                        self._xsamples[i] = x_p.value
-        x = sum(self._xsamples) / len(self._xsamples)
-        x_size = 65535
-        if self._size:
-            x_size = self._size[0]
-        x = int(map_range(x, self._calib[0][0], self._calib[0][1], 0, x_size))
-
-        with DigitalInOut(self._xp_pin) as x_p:
-            with DigitalInOut(self._xm_pin) as x_m:
-                with AnalogIn(self._yp_pin) as y_p:
-                    x_p.switch_to_output(True)
-                    x_m.switch_to_output(False)
-                    for i in range(  # pylint: disable=consider-using-enumerate
-                        len(self._ysamples)
-                    ):
-                        self._ysamples[i] = y_p.value
-        y = sum(self._ysamples) / len(self._ysamples)
-        y_size = 65535
-        if self._size:
-            y_size = self._size[1]
-        y = int(map_range(y, self._calib[1][0], self._calib[1][1], 0, y_size))
-
         z_1 = z_2 = z = None
         with DigitalInOut(self._xp_pin) as x_p:
             x_p.switch_to_output(False)
@@ -160,5 +131,35 @@ class Touchscreen:
         # print(z_1, z_2)
         z = 65535 - (z_2 - z_1)
         if z > self._zthresh:
+            with DigitalInOut(self._yp_pin) as y_p:
+                with DigitalInOut(self._ym_pin) as y_m:
+                    with AnalogIn(self._xp_pin) as x_p:
+                        y_p.switch_to_output(True)
+                        y_m.switch_to_output(False)
+                        for i in range(  # pylint: disable=consider-using-enumerate
+                            len(self._xsamples)
+                        ):
+                            self._xsamples[i] = x_p.value
+            x = sum(self._xsamples) / len(self._xsamples)
+            x_size = 65535
+            if self._size:
+                x_size = self._size[0]
+            x = int(map_range(x, self._calib[0][0], self._calib[0][1], 0, x_size))
+
+            with DigitalInOut(self._xp_pin) as x_p:
+                with DigitalInOut(self._xm_pin) as x_m:
+                    with AnalogIn(self._yp_pin) as y_p:
+                        x_p.switch_to_output(True)
+                        x_m.switch_to_output(False)
+                        for i in range(  # pylint: disable=consider-using-enumerate
+                            len(self._ysamples)
+                        ):
+                            self._ysamples[i] = y_p.value
+            y = sum(self._ysamples) / len(self._ysamples)
+            y_size = 65535
+            if self._size:
+                y_size = self._size[1]
+            y = int(map_range(y, self._calib[1][0], self._calib[1][1], 0, y_size))
+
             return (x, y, z)
         return None
