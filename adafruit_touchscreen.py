@@ -108,7 +108,6 @@ class Touchscreen:
         self._rx_plate = x_resistance
         self._xsamples = [0] * samples
         self._ysamples = [0] * samples
-        self._zsamples = [0] * samples
         if not calibration:
             calibration = ((0, 65535), (0, 65535))
         self._calib = calibration
