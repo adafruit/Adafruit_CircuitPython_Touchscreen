@@ -30,8 +30,9 @@ import displayio
 import vectorio
 import terminalio
 from adafruit_display_text.label import Label
-import adafruit_touchscreen
 from simpleio import map_range
+import adafruit_touchscreen
+
 
 # Operational parameters:
 DISPLAY_ROTATION = 0  # Specify 0, 90, 180, or 270 degrees
