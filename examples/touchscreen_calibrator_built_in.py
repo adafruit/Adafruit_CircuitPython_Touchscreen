@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-touch_calibrator_built_in.py  2022-01-21 v2.1
+touch_calibrator_built_in.py  2022-05-27 v2.2
 
 Author(s): JG for Cedar Grove Maker Studios
 
@@ -47,7 +47,7 @@ class Colors:
     WHITE = 0xFFFFFF  # Text
 
 
-# Instantiate the built-in display.
+# Instantiate the built-in display
 display = board.DISPLAY
 
 # Check rotation value and update display.
@@ -55,11 +55,11 @@ display = board.DISPLAY
 if DISPLAY_ROTATION is not None and DISPLAY_ROTATION in (0, 90, 180, 270):
     display.rotation = DISPLAY_ROTATION
 else:
-    print("Warning: invalid rotation value -- defalting to zero")
+    print("Warning: invalid rotation value -- defaulting to zero")
     display.rotation = 0
     time.sleep(1)
 
-# Activate the display graphics unless REPL_ONLY=True.
+# Activate the display graphics unless REPL_ONLY=True
 if not REPL_ONLY:
     display_group = displayio.Group()
     display.show(display_group)
@@ -107,7 +107,7 @@ elif display.rotation == 270:
 else:
     raise ValueError("Rotation value must be 0, 90, 180, or 270")
 
-# Define the graphic objects if REPL_ONLY = False.
+# Define the graphic objects if REPL_ONLY = False
 if not REPL_ONLY:
     # Define the text graphic objects
     font_0 = terminalio.FONT
@@ -134,7 +134,7 @@ if not REPL_ONLY:
         board.DISPLAY.height // 4 - 30,
     )
 
-    # Define graphic objects for the screen fill, boundary, and touch pen.
+    # Define graphic objects for the screen fill, boundary, and touch pen
     target_palette = displayio.Palette(1)
     target_palette[0] = Colors.BLUE_DK
     screen_fill = vectorio.Rectangle(
@@ -170,7 +170,7 @@ if not REPL_ONLY:
     display_group.append(display_rotation)
 
 # pylint: disable=invalid-name
-# Reset x and y values to raw touchscreen mid-point before measurement.
+# Reset x and y values to raw touchscreen mid-point before measurement
 x_min = x_max = y_min = y_max = 65535 // 2
 
 print("Touchscreen Calibrator")
@@ -185,11 +185,7 @@ while True:
     time.sleep(0.100)
     touch = ts.touch_point  # Check for touch
     if touch:
-        if not REPL_ONLY:
-            pen.x = int(map_range(touch[0], x_min, x_max, 0, board.DISPLAY.width)) - 5
-            pen.y = int(map_range(touch[1], y_min, y_max, 0, board.DISPLAY.height)) - 5
-
-        # Remember minimum and maximum values for the calibration tuple.
+        # Remember minimum and maximum values for the calibration tuple
         x_min = min(x_min, touch[0])
         x_max = max(x_max, touch[0])
         y_min = min(y_min, touch[1])
@@ -198,4 +194,6 @@ while True:
         # Show the calibration tuple.
         print(f"(({x_min}, {x_max}), ({y_min}, {y_max}))")
         if not REPL_ONLY:
+            pen.x = int(map_range(touch[0], x_min, x_max, 0, board.DISPLAY.width)) - 5
+            pen.y = int(map_range(touch[1], y_min, y_max, 0, board.DISPLAY.height)) - 5
             coordinates.text = f"calib: (({x_min}, {x_max}), ({y_min}, {y_max}))"
