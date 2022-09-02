@@ -28,12 +28,13 @@ from digitalio import DigitalInOut
 from analogio import AnalogIn
 
 try:
-    from typing import Optional, Tuple, Union
+    from typing import Optional, Tuple
+    from microcontroller import Pin
 except ImportError:
     pass
 
 
-def map_range(x, in_min, in_max, out_min, out_max) -> float:
+def map_range(x: float, in_min: int, in_max: int, out_min: int, out_max: int) -> float:
 
     """
     Maps a number from one range to another.
@@ -94,10 +95,10 @@ class Touchscreen:
 
     def __init__(
         self,
-        x1_pin: DigitalInOut,
-        x2_pin: DigitalInOut,
-        y1_pin: DigitalInOut,
-        y2_pin: DigitalInOut,
+        x1_pin: Pin,
+        x2_pin: Pin,
+        y1_pin: Pin,
+        y2_pin: Pin,
         *,
         x_resistance: Optional[int] = None,
         samples: int = 4,
@@ -122,7 +123,7 @@ class Touchscreen:
     @property
     def touch_point(
         self,
-    ) -> Union[None, Tuple[int, int, int]]:  # pylint: disable=too-many-locals
+    ) -> Optional[Tuple[int, int, int]]:  # pylint: disable=too-many-locals
         """A tuple that represents the x, y and z (touch pressure) coordinates
         of a touch. Or, None if no touch is detected"""
         z_1 = z_2 = z = None
