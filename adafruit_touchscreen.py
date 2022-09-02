@@ -122,7 +122,7 @@ class Touchscreen:
     @property
     def touch_point(
         self,
-    ) -> Union[None, Tuple[float, float, int]]:  # pylint: disable=too-many-locals
+    ) -> Union[None, Tuple[int, int, int]]:  # pylint: disable=too-many-locals
         """A tuple that represents the x, y and z (touch pressure) coordinates
         of a touch. Or, None if no touch is detected"""
         z_1 = z_2 = z = None
