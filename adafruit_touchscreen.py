@@ -27,8 +27,14 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Touchscreen.git"
 from digitalio import DigitalInOut
 from analogio import AnalogIn
 
+try:
+    from typing import Optional, Tuple
+    from microcontroller import Pin
+except ImportError:
+    pass
 
-def map_range(x, in_min, in_max, out_min, out_max):
+
+def map_range(x: float, in_min: int, in_max: int, out_min: int, out_max: int) -> float:
 
     """
     Maps a number from one range to another.
@@ -89,17 +95,17 @@ class Touchscreen:
 
     def __init__(
         self,
-        x1_pin,
-        x2_pin,
-        y1_pin,
-        y2_pin,
+        x1_pin: Pin,
+        x2_pin: Pin,
+        y1_pin: Pin,
+        y2_pin: Pin,
         *,
-        x_resistance=None,
-        samples=4,
-        z_threshold=10000,
-        calibration=None,
-        size=None
-    ):
+        x_resistance: Optional[int] = None,
+        samples: int = 4,
+        z_threshold: int = 10000,
+        calibration: Optional[Tuple[Tuple[int, int], Tuple[int, int]]] = None,
+        size: Optional[Tuple[int, int]] = None
+    ) -> None:
 
         self._xm_pin = x1_pin
         self._xp_pin = x2_pin
@@ -115,7 +121,9 @@ class Touchscreen:
         self._zthresh = z_threshold
 
     @property
-    def touch_point(self):  # pylint: disable=too-many-locals
+    def touch_point(
+        self,
+    ) -> Optional[Tuple[int, int, int]]:  # pylint: disable=too-many-locals
         """A tuple that represents the x, y and z (touch pressure) coordinates
         of a touch. Or, None if no touch is detected"""
         z_1 = z_2 = z = None
