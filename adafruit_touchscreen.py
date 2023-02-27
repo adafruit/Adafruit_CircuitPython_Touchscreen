@@ -90,6 +90,8 @@ class Touchscreen:
      readings for the X and Y coordinate planes, respectively.
      Defaults to :const:`((0, 65535), (0, 65535))`
     :param int,int size: The dimensions of the screen as (x, y).
+    :param bool invert_pressure: Whether to invert the pressure values. Some touchscreens and
+     drivers may need this to be changed to `False` in order to properly register touches.
 
     """
 
