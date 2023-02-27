@@ -90,6 +90,8 @@ class Touchscreen:
      readings for the X and Y coordinate planes, respectively.
      Defaults to :const:`((0, 65535), (0, 65535))`
     :param int,int size: The dimensions of the screen as (x, y).
+    :param bool invert_pressure: Whether to invert the pressure values. Some touchscreens and
+     drivers may need this to be changed to `False` in order to properly register touches.
 
     """
 
@@ -104,7 +106,8 @@ class Touchscreen:
         samples: int = 4,
         z_threshold: int = 10000,
         calibration: Optional[Tuple[Tuple[int, int], Tuple[int, int]]] = None,
-        size: Optional[Tuple[int, int]] = None
+        size: Optional[Tuple[int, int]] = None,
+        invert_pressure: bool = True
     ) -> None:
 
         self._xm_pin = x1_pin
@@ -119,6 +122,7 @@ class Touchscreen:
         self._calib = calibration
         self._size = size
         self._zthresh = z_threshold
+        self.invert_pressure = invert_pressure
 
     @property
     def touch_point(
@@ -136,7 +140,10 @@ class Touchscreen:
                 with AnalogIn(self._yp_pin) as y_p:
                     z_2 = y_p.value
         # print(z_1, z_2)
-        z = 65535 - (z_2 - z_1)
+        if self.invert_pressure:
+            z = 65535 - (z_2 - z_1)
+        else:
+            z = z_2 + z_1
         if z > self._zthresh:
             with DigitalInOut(self._yp_pin) as y_p:
                 with DigitalInOut(self._ym_pin) as y_m:
