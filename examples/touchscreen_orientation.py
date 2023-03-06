@@ -30,6 +30,7 @@ if rotation == 90:
         calibration=((5200, 59000), (5800, 57000)),
         size=(240, 320),
     )
+import time
 
 if rotation == 180:
     # ------Rotate 180:
@@ -52,6 +53,7 @@ if rotation == 270:
         calibration=((5200, 59000), (5800, 57000)),
         size=(240, 320),
     )
+import os
 
 while True:
     p = ts.touch_point
