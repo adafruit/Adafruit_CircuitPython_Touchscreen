@@ -158,7 +158,7 @@ class Touchscreen:
             x_size = 65535
             if self._size:
                 x_size = self._size[0]
-            x = int(map_range(x, self._calib[0][0], self._calib[0][1], 0, x_size))
+            x = int(map_range(x, self._calib[0][0], self._calib[0][1], 0, x_size - 1))
 
             with DigitalInOut(self._xp_pin) as x_p:
                 with DigitalInOut(self._xm_pin) as x_m:
@@ -173,7 +173,7 @@ class Touchscreen:
             y_size = 65535
             if self._size:
                 y_size = self._size[1]
-            y = int(map_range(y, self._calib[1][0], self._calib[1][1], 0, y_size))
+            y = int(map_range(y, self._calib[1][0], self._calib[1][1], 0, y_size - 1))
 
             return (x, y, z)
         return None
