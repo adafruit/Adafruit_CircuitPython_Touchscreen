@@ -38,6 +38,7 @@ import adafruit_touchscreen
 DISPLAY_ROTATION = 0  # Specify 0, 90, 180, or 270 degrees
 REPL_ONLY = False  # True to disable graphics
 
+
 # pylint: disable=too-few-public-methods
 class Colors:
     """A collection of colors used for graphic objects."""

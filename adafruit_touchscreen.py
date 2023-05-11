@@ -35,7 +35,6 @@ except ImportError:
 
 
 def map_range(x: float, in_min: int, in_max: int, out_min: int, out_max: int) -> float:
-
     """
     Maps a number from one range to another.
 
@@ -109,7 +108,6 @@ class Touchscreen:
         size: Optional[Tuple[int, int]] = None,
         invert_pressure: bool = True
     ) -> None:
-
         self._xm_pin = x1_pin
         self._xp_pin = x2_pin
         self._ym_pin = y1_pin
