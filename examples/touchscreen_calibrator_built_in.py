@@ -25,21 +25,21 @@ Default value is False.
 """
 
 import time
+
 import board
 import displayio
-import vectorio
 import terminalio
+import vectorio
 from adafruit_display_text.label import Label
 from simpleio import map_range
-import adafruit_touchscreen
 
+import adafruit_touchscreen
 
 # Operational parameters:
 DISPLAY_ROTATION = 0  # Specify 0, 90, 180, or 270 degrees
 REPL_ONLY = False  # True to disable graphics
 
 
-# pylint: disable=too-few-public-methods
 class Colors:
     """A collection of colors used for graphic objects."""
 
@@ -53,7 +53,7 @@ display = board.DISPLAY
 
 # Check rotation value and update display.
 # Always set rotation before instantiating the touchscreen.
-if DISPLAY_ROTATION is not None and DISPLAY_ROTATION in (0, 90, 180, 270):
+if DISPLAY_ROTATION is not None and DISPLAY_ROTATION in {0, 90, 180, 270}:
     display.rotation = DISPLAY_ROTATION
 else:
     print("Warning: invalid rotation value -- defaulting to zero")
@@ -170,7 +170,6 @@ if not REPL_ONLY:
     display_group.append(coordinates)
     display_group.append(display_rotation)
 
-# pylint: disable=invalid-name
 # Reset x and y values to raw touchscreen mid-point before measurement
 x_min = x_max = y_min = y_max = 65535 // 2
 
