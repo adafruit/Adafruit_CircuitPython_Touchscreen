@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import board
+
 import adafruit_touchscreen
 
 # These pins are used as both analog and digital! XL, XR and YU must be analog

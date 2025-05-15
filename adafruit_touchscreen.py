@@ -24,11 +24,12 @@ Implementation Notes
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Touchscreen.git"
 
-from digitalio import DigitalInOut
 from analogio import AnalogIn
+from digitalio import DigitalInOut
 
 try:
     from typing import Optional, Tuple
+
     from microcontroller import Pin
 except ImportError:
     pass
@@ -106,7 +107,7 @@ class Touchscreen:
         z_threshold: int = 10000,
         calibration: Optional[Tuple[Tuple[int, int], Tuple[int, int]]] = None,
         size: Optional[Tuple[int, int]] = None,
-        invert_pressure: bool = True
+        invert_pressure: bool = True,
     ) -> None:
         self._xm_pin = x1_pin
         self._xp_pin = x2_pin
@@ -125,7 +126,7 @@ class Touchscreen:
     @property
     def touch_point(
         self,
-    ) -> Optional[Tuple[int, int, int]]:  # pylint: disable=too-many-locals
+    ) -> Optional[Tuple[int, int, int]]:
         """A tuple that represents the x, y and z (touch pressure) coordinates
         of a touch. Or, None if no touch is detected"""
         z_1 = z_2 = z = None
@@ -148,9 +149,7 @@ class Touchscreen:
                     with AnalogIn(self._xp_pin) as x_p:
                         y_p.switch_to_output(True)
                         y_m.switch_to_output(False)
-                        for i in range(  # pylint: disable=consider-using-enumerate
-                            len(self._xsamples)
-                        ):
+                        for i in range(len(self._xsamples)):
                             self._xsamples[i] = x_p.value
             x = sum(self._xsamples) / len(self._xsamples)
             x_size = 65535
@@ -163,9 +162,7 @@ class Touchscreen:
                     with AnalogIn(self._yp_pin) as y_p:
                         x_p.switch_to_output(True)
                         x_m.switch_to_output(False)
-                        for i in range(  # pylint: disable=consider-using-enumerate
-                            len(self._ysamples)
-                        ):
+                        for i in range(len(self._ysamples)):
                             self._ysamples[i] = y_p.value
             y = sum(self._ysamples) / len(self._ysamples)
             y_size = 65535

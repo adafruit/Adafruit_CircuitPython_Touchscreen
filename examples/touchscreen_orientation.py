@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import board
+
 import adafruit_touchscreen
 
 # Allign the touchscreen so that the top left corner reads as x=0, y=0
